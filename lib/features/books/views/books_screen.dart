@@ -13,7 +13,13 @@ class BooksScreen extends StatelessWidget {
       child: Consumer<BooksViewModel>(
         builder: (context, vm, _) => Scaffold(
           appBar: AppBar(
-            title: const Text('Thorai Books'),
+            title: const Text(
+              'Thorai Books',
+              style: TextStyle( 
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+              )
+              ),
             centerTitle: true,
             backgroundColor: const Color.fromARGB(255, 12, 78, 132),
             foregroundColor: Colors.white,
