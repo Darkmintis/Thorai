@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.library_books, size: 100, color: Color.fromARGB(255, 25, 96, 154)),
+                  const Icon(Icons.local_library, size: 100, color: Color.fromARGB(255, 25, 96, 154)),
                   const SizedBox(height: 50), 
                   TextField(
                     controller: _userController,
