@@ -15,11 +15,11 @@ class LoginViewModel extends BaseViewModel {
   })  : authService = authService ?? AuthService(),
         storage = storage ?? StorageService();
 
-  Future<User> login(String username, String password) async {
+  Future<User> login(String email, String password) async {
     setLoading(true);
     clearError();
     try {
-      final user = await authService.login(LoginRequest(username: username, password: password));
+      final user = await authService.login(LoginRequest(email: email, password: password));
       await storage.saveToken(user.token);
       return user;
     } catch (e) {
@@ -27,7 +27,7 @@ class LoginViewModel extends BaseViewModel {
       final fallbackToken = ApiConstants.demoToken;
       if (fallbackToken.isNotEmpty) {
         await storage.saveToken(fallbackToken);
-        return User(token: fallbackToken, username: username);
+        return User(token: fallbackToken, email: email);
       }
       setError('Login failed; please check credentials. $e');
       rethrow;

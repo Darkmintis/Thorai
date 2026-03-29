@@ -1,11 +1,11 @@
 class User {
   final String token;
-  final String? username;
+  final String? email;
 
-  User({required this.token, this.username});
+  User({required this.token, this.email});
 
   factory User.fromJson(Map<String, dynamic> json) => User(
         token: json['token'] ?? json['access_token'] ?? '',
-        username: json['username'] ?? json['email'],
+        email: json['email'] ?? json['email'],
       );
 }
