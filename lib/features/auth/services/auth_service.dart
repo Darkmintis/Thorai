@@ -6,22 +6,46 @@ import '../../../models/user.dart';
 
 class AuthService {
   Future<User> login(LoginRequest req) async {
-    final res = await http.post(
+    // Try with 'email' field first
+    var response = await _attemptLogin({'email': req.email, 'password': req.password});
+    
+    // If 400, try with 'username' field
+    if (response.statusCode == 400) {
+      response = await _attemptLogin({'username': req.email, 'password': req.password});
+    }
+    
+    return _handleResponse(response);
+  }
+
+  Future<http.Response> _attemptLogin(Map<String, dynamic> body) async {
+    return await http.post(
       Uri.parse(ApiConstants.login),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(req.toJson()),
+      body: jsonEncode(body),
     );
+  }
 
+  User _handleResponse(http.Response res) {
     if (res.statusCode == 200 || res.statusCode == 201) {
       final data = jsonDecode(res.body);
       return User.fromJson(data);
     }
 
-    String message = 'Failed to login (status ${res.statusCode})';
+    // For any error, show user-friendly message
+    if (res.statusCode == 400 || res.statusCode == 401 || res.statusCode == 403) {
+      throw Exception('Invalid email or password');
+    }
+
+    String message = 'Invalid email or password';
     try {
       final body = jsonDecode(res.body);
-      if (body is Map && body['detail'] != null) message = body['detail'];
-    } catch (_) {}
+      if (body is Map && body['detail'] != null) {
+        message = body['detail'];
+      }
+    } catch (e) {
+      // Ignore parse errors
+    }
+    
     throw Exception(message);
   }
 }

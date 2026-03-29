@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _userController = TextEditingController();
   final _passController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical:16),
                       ),
                   ),
+                  if (vm.emailError != null)
+                    Text(vm.emailError!, style: const TextStyle(color: Colors.red, fontSize: 12)),
                   const SizedBox(height: 12),
                   TextField(
                     controller: _passController,
@@ -71,12 +74,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
                       ),
                       contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical:16),
+                      suffixIcon: IconButton(
+                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                   ),
+                  if (vm.passwordError != null)
+                    Text(vm.passwordError!, style: const TextStyle(color: Colors.red, fontSize: 12)),
                   const SizedBox(height: 14),
                   if (vm.error != null)
-                    Text(vm.error!, style: const TextStyle(color: Colors.red)),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(vm.error!, style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold)),
+                    ),
                   const SizedBox(height: 14),
                   ElevatedButton(
                     onPressed: vm.loading
