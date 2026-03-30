@@ -1,8 +1,8 @@
-import '../../../core/base/base_viewmodel.dart';
-import '../../../features/auth/services/auth_service.dart';
-import '../../../models/login_request.dart';
-import '../../../models/user.dart';
-import '../../../services/storage_service.dart';
+import '../../core/base/base_viewmodel.dart';
+import 'models/auth_service.dart';
+import 'models/login_request.dart';
+import 'models/user.dart';
+import '../../core/services/storage_service.dart';
 
 class LoginViewModel extends BaseViewModel {
   final AuthService authService;

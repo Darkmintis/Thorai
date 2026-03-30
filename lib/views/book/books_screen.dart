@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../widgets/book_card.dart';
-import '../view_models/books_view_model.dart';
-import '../../../services/storage_service.dart';
-import '../../auth/views/login_screen.dart';
-import 'favorites_screen.dart';
+import 'widget/book_card.dart';
+import 'books_view_model.dart';
+import '../../core/services/storage_service.dart';
+import '../login/login_screen.dart';
+import '../favorite/favorites_screen.dart';
 
 class BooksScreen extends StatefulWidget {
   const BooksScreen({super.key});

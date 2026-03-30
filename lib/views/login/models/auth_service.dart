@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/api_constants.dart';
-import '../../../models/login_request.dart';
-import '../../../models/user.dart';
+import 'login_request.dart';
+import 'user.dart';
 
 class AuthService {
   Future<User> login(LoginRequest req) async {

@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../core/constants/api_constants.dart';
-import '../../../models/book.dart';
+import 'book.dart';
 
 class BookResult {
   final List<Book> books;

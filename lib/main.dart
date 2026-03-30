@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'features/books/view_models/books_view_model.dart';
-import 'features/auth/views/login_screen.dart';
+import 'views/book/books_view_model.dart';
+import 'views/login/login_screen.dart';
 
 void main() {
   runApp(const MyApp());
