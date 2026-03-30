@@ -18,7 +18,6 @@ migrate_working_dir/
 *.iws
 .idea/
  
-android/
 .metadata
 
 # The .vscode folder contains launch configuration and tasks you configure in
