@@ -114,14 +114,24 @@ class _BooksScreenState extends State<BooksScreen> {
                             children: [
                               ElevatedButton(
                                 onPressed: vm.hasPrevPage && !vm.loading ? () => vm.prevPage() : null,
-                                child: const Text('Previous'),
+                                child: const Text(
+                                  'Previous',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 59, 58, 58),
+                                  ),
+                                  ),
                               ),
                               const SizedBox(width: 20),
                               Text('Page ${vm.currentPage}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                               const SizedBox(width: 20),
                               ElevatedButton(
                                 onPressed: vm.hasNextPage && !vm.loading ? () => vm.nextPage() : null,
-                                child: const Text('Next'),
+                                child: const Text(
+                                  'Next',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 34, 33, 33),
+                                  ),
+                                  ),
                               ),
                             ],
                           ),
