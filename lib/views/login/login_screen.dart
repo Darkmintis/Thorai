@@ -14,6 +14,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _userController = TextEditingController();
   final _passController = TextEditingController();
   bool _obscurePassword = true;
+  bool _attemptedSubmit = false; // Track if user attempted to submit
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 )
               ),
               centerTitle: true,
-              ),
+            ),
             body: Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -39,8 +40,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   const Icon(Icons.local_library, size: 100, color: Color.fromARGB(255, 25, 96, 154)),
                   const SizedBox(height: 50), 
+                  
+                  // Email Field
                   TextField(
                     controller: _userController,
+                    onChanged: (value) {
+                      // Clear email error when user starts typing
+                      if (_attemptedSubmit && vm.emailError != null) {
+                      }
+                    },
                     decoration: InputDecoration(
                       labelText: 'Email',
                       filled: true,
@@ -53,14 +61,42 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical:16),
-                      ),
+                      // Only show red border if attempted submit AND there's an error
+                      errorBorder: (_attemptedSubmit && vm.emailError != null)
+                          ? OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                            )
+                          : OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                      focusedErrorBorder: (_attemptedSubmit && vm.emailError != null)
+                          ? OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                            )
+                          : OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+                            ),
+                      errorText: _attemptedSubmit ? vm.emailError : null,
+                      errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
+                    ),
                   ),
-                  if (vm.emailError != null)
-                    Text(vm.emailError!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+
                   const SizedBox(height: 12),
+                  
+                  // Password Field
                   TextField(
                     controller: _passController,
+                    onChanged: (value) {
+                      // Clear password error when user starts typing
+                      if (_attemptedSubmit && vm.passwordError != null) {
+                        
+                      }
+                    },
                     decoration: InputDecoration(
                       labelText: 'Password',
                       filled: true,
@@ -73,7 +109,28 @@ class _LoginScreenState extends State<LoginScreen> {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical:16),
+                      // Only show red border if attempted submit AND there's an error
+                      errorBorder: (_attemptedSubmit && vm.passwordError != null)
+                          ? OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                            )
+                          : OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide.none,
+                            ),
+                      focusedErrorBorder: (_attemptedSubmit && vm.passwordError != null)
+                          ? OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Colors.red, width: 2),
+                            )
+                          : OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(color: Colors.blue.shade600, width: 2),
+                            ),
+                      errorText: _attemptedSubmit ? vm.passwordError : null,
+                      errorStyle: const TextStyle(color: Colors.red, fontSize: 12),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 16),
                       suffixIcon: IconButton(
                         icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
                         onPressed: () {
@@ -85,19 +142,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     obscureText: _obscurePassword,
                   ),
-                  if (vm.passwordError != null)
-                    Text(vm.passwordError!, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                 
                   const SizedBox(height: 14),
+                  
+                  // General error message
                   if (vm.error != null)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(vm.error!, style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold)),
                     ),
+                  
                   const SizedBox(height: 14),
+                  
+                  // Login Button
                   ElevatedButton(
                     onPressed: vm.loading
                         ? null
                         : () async {
+                            // Mark that user attempted to submit
+                            setState(() {
+                              _attemptedSubmit = true;
+                            });
+                            
                             try {
                               await vm.login(_userController.text.trim(), _passController.text.trim());
                               if (context.mounted) {
