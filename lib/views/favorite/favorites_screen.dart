@@ -46,7 +46,7 @@ class FavoritesScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final book = vm.favorites[index];
                         return BookCard(
-                          key: ValueKey('fav_${book.slug}_${index}'),
+                          key: ValueKey('fav_${book.slug}_$index'),
                           book: book,
                           isFavorite: true,
                           onFavoriteToggle: () {

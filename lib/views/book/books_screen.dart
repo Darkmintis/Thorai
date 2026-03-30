@@ -98,7 +98,7 @@ class _BooksScreenState extends State<BooksScreen> {
                           itemBuilder: (context, index) {
                             final book = vm.books[index];
                             return BookCard(
-                              key: ValueKey('book_${book.slug}_${index}'),
+                              key: ValueKey('book_${book.slug}_$index'),
                               book: book,
                               isFavorite: vm.isFavorite(book),
                               onFavoriteToggle: () {
