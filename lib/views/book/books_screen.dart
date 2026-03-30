@@ -18,7 +18,7 @@ class _BooksScreenState extends State<BooksScreen> {
   void initState() {
     super.initState();
     // Load books when screen is first shown
-    Future.microtask(() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<BooksViewModel>().loadBooks();
       }
