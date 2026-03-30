@@ -6,29 +6,15 @@ import '../../core/services/storage_service.dart';
 import '../login/login_screen.dart';
 import '../favorite/favorites_screen.dart';
 
-class BooksScreen extends StatefulWidget {
+class BooksScreen extends StatelessWidget {
   const BooksScreen({super.key});
-
-  @override
-  State<BooksScreen> createState() => _BooksScreenState();
-}
-
-class _BooksScreenState extends State<BooksScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Load books when screen is first shown
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.read<BooksViewModel>().loadBooks();
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<BooksViewModel>(
-      builder: (context, vm, _) => Scaffold(
+      builder: (context, vm, _) {
+        vm.init(); // Initialize loading on first build
+        return Scaffold(
         appBar: AppBar(
           title: const Text(
             'Thorai Books',
@@ -139,7 +125,8 @@ class _BooksScreenState extends State<BooksScreen> {
                       ],
                     ),
                   ),
-      ),
+        );
+      },
     );
   }
 }

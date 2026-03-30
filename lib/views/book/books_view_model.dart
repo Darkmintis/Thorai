@@ -11,6 +11,7 @@ class BooksViewModel extends BaseViewModel {
   int currentPage = 1;
   bool hasNextPage = true;
   bool hasPrevPage = false;
+  bool _initialized = false;
 
   BooksViewModel({
     BookService? bookService,
@@ -18,6 +19,13 @@ class BooksViewModel extends BaseViewModel {
   })  : bookService = bookService ?? BookService(),
         storage = storage ?? StorageService() {
     loadFavorites();
+  }
+
+  void init() {
+    if (!_initialized) {
+      _initialized = true;
+      loadBooks();
+    }
   }
 
   Future<void> loadBooks({int? page}) async {
