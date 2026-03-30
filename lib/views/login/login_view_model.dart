@@ -8,6 +8,11 @@ class LoginViewModel extends BaseViewModel {
   final AuthService authService;
   final StorageService storage;
 
+  String email = '';
+  String password = '';
+  bool obscurePassword = true;
+  bool attemptedSubmit = false;
+
   String? emailError;
   String? passwordError;
 
@@ -16,6 +21,27 @@ class LoginViewModel extends BaseViewModel {
     StorageService? storage,
   })  : authService = authService ?? AuthService(),
         storage = storage ?? StorageService();
+
+  void setEmail(String value) {
+    email = value;
+    if (attemptedSubmit && emailError != null) {
+      emailError = null;
+      notifyListeners();
+    }
+  }
+
+  void setPassword(String value) {
+    password = value;
+    if (attemptedSubmit && passwordError != null) {
+      passwordError = null;
+      notifyListeners();
+    }
+  }
+
+  void togglePasswordVisibility() {
+    obscurePassword = !obscurePassword;
+    notifyListeners();
+  }
 
   bool validateEmail(String email) {
     if (email.isEmpty) {
@@ -43,12 +69,12 @@ class LoginViewModel extends BaseViewModel {
     }
   }
 
-  Future<User> login(String email, String password) async {
+  Future<User> login() async {
+    attemptedSubmit = true;
     notifyListeners();
-    
+
     bool isEmailValid = validateEmail(email);
     bool isPasswordValid = validatePassword(password);
-    notifyListeners();
 
     if (!isEmailValid || !isPasswordValid) {
       return Future.error('Please fix validation errors');
