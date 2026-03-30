@@ -7,7 +7,6 @@ class BooksViewModel extends BaseViewModel {
   final BookService bookService;
   final StorageService storage;
   List<Book> books = [];
-  List<Book> favorites = [];
   int currentPage = 1;
   bool hasNextPage = true;
   bool hasPrevPage = false;
@@ -17,9 +16,7 @@ class BooksViewModel extends BaseViewModel {
     BookService? bookService,
     StorageService? storage,
   })  : bookService = bookService ?? BookService(),
-        storage = storage ?? StorageService() {
-    loadFavorites();
-  }
+        storage = storage ?? StorageService();
 
   void init() {
     if (!_initialized) {
@@ -56,30 +53,5 @@ class BooksViewModel extends BaseViewModel {
     if (hasPrevPage) {
       loadBooks(page: currentPage - 1);
     }
-  }
-
-  Future<void> loadFavorites() async {
-    final favBooks = await storage.getFavoriteBooks();
-    favorites = favBooks;
-    notifyListeners();
-  }
-
-  Future<void> toggleFavorite(Book book) async {
-    final isFav = isFavorite(book);
-
-    if (isFav) {
-      favorites.removeWhere((b) => b.slug == book.slug);
-    } else {
-      if (!favorites.any((b) => b.slug == book.slug)) {
-        favorites.add(book);
-      }
-    }
-
-    await storage.saveFavoriteBooks(favorites);
-    notifyListeners();
-  }
-
-  bool isFavorite(Book book) {
-    return favorites.any((b) => b.slug == book.slug);
   }
 }

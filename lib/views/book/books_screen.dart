@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'widget/book_card.dart';
 import 'books_view_model.dart';
+import '../favorite/favorites_view_model.dart';
 import '../../core/services/storage_service.dart';
 import '../login/login_screen.dart';
 import '../favorite/favorites_screen.dart';
@@ -11,9 +12,9 @@ class BooksScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<BooksViewModel>(
-      builder: (context, vm, _) {
-        vm.init(); // Initialize loading on first build
+    return Consumer2<BooksViewModel, FavoritesViewModel>(
+      builder: (context, booksVm, favVm, _) {
+        booksVm.init(); // Initialize loading on first build
         return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -51,17 +52,17 @@ class BooksScreen extends StatelessWidget {
             ),
           ],
         ),
-        body: vm.loading && vm.books.isEmpty
+        body: booksVm.loading && booksVm.books.isEmpty
             ? const Center(child: CircularProgressIndicator())
-            : vm.error != null && vm.books.isEmpty
+            : booksVm.error != null && booksVm.books.isEmpty
                 ? Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(vm.error!),
+                        Text(booksVm.error!),
                         const SizedBox(height: 16),
                         ElevatedButton(
-                          onPressed: () => vm.loadBooks(),
+                          onPressed: () => booksVm.loadBooks(),
                           child: const Text('Retry'),
                         ),
                       ],
@@ -80,15 +81,15 @@ class BooksScreen extends StatelessWidget {
                             crossAxisSpacing: 10,
                             mainAxisSpacing: 10,
                           ),
-                          itemCount: vm.books.length,
+                          itemCount: booksVm.books.length,
                           itemBuilder: (context, index) {
-                            final book = vm.books[index];
+                            final book = booksVm.books[index];
                             return BookCard(
                               key: ValueKey('book_${book.slug}_$index'),
                               book: book,
-                              isFavorite: vm.isFavorite(book),
+                              isFavorite: favVm.isFavorite(book),
                               onFavoriteToggle: () {
-                                vm.toggleFavorite(book);
+                                favVm.toggleFavorite(book);
                               },
                             );
                           },
@@ -99,7 +100,7 @@ class BooksScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ElevatedButton(
-                                onPressed: vm.hasPrevPage && !vm.loading ? () => vm.prevPage() : null,
+                                onPressed: booksVm.hasPrevPage && !booksVm.loading ? () => booksVm.prevPage() : null,
                                 child: const Text(
                                   'Previous',
                                   style: TextStyle(
@@ -108,10 +109,10 @@ class BooksScreen extends StatelessWidget {
                                   ),
                               ),
                               const SizedBox(width: 20),
-                              Text('Page ${vm.currentPage}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text('Page ${booksVm.currentPage}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                               const SizedBox(width: 20),
                               ElevatedButton(
-                                onPressed: vm.hasNextPage && !vm.loading ? () => vm.nextPage() : null,
+                                onPressed: booksVm.hasNextPage && !booksVm.loading ? () => booksVm.nextPage() : null,
                                 child: const Text(
                                   'Next',
                                   style: TextStyle(

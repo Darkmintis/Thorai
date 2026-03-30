@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../book/widget/book_card.dart';
-import '../book/books_view_model.dart';
+import 'favorites_view_model.dart';
 
 class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
@@ -21,7 +21,7 @@ class FavoritesScreen extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 12, 78, 132),
         foregroundColor: Colors.white,
       ),
-      body: Consumer<BooksViewModel>(
+      body: Consumer<FavoritesViewModel>(
         builder: (context, vm, _) => vm.favorites.isEmpty
             ? const Center(
                 child: Text(
