@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:thorai/core/di/service_locator.dart';
 import 'views/book/books_view_model.dart';
 import 'views/login/login_screen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  setupLocator();
+
   runApp(const MyApp());
 }
 

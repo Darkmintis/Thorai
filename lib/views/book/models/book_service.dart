@@ -1,5 +1,6 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+
+import '../../../core/network/dio_client.dart';
 import '../../../core/constants/api_constants.dart';
 import 'book.dart';
 
@@ -32,26 +33,35 @@ Map<String, dynamic> toJson(){
 }
 
 class BookService {
+  final Dio _dio = DioClient().dio;
+
   Future<BookResult> fetchBooks(String? token, {int page = 1}) async {
-    final url = '${ApiConstants.bookGrid}?page=$page';
+    try {
+   final response = await _dio.get(
+    ApiConstants.bookGrid,
+    queryParameters: {'page': page},
+    options: Options(
+      headers: {
+        if (token != null && token.isNotEmpty)
+        'Authorization': 'Token $token',
+      },
+    ),
+   );
 
-        final headers = {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-       if(token != null && token.isNotEmpty)
-        'Authorization' : 'Token $token',
-        };
+   if (response.statusCode == 200){
+    return BookResult.fromJson(response.data as Map<String, dynamic>);
+   }
 
-    final response = await http.get(
-      Uri.parse(url),
-      headers: headers,
-    );
-
-    if (response.statusCode == 200) {
-      final body = jsonDecode(utf8.decode(response.bodyBytes));
-      return BookResult.fromJson(body);
+   throw Exception('Failed to load books: ${response.statusCode}');
+    } on DioException catch (e){
+      if (e.type == DioExceptionType.connectionTimeout || 
+      e.type == DioExceptionType.receiveTimeout){
+        throw Exception('Connection timeout. Please check your internet.');
+      }
+      if (e.response?.statusCode == 401){
+        throw Exception('Unauthorized. Please login again.');
+      }
+      throw Exception('Failed to load books: ${e.message}');
     }
-
-    throw Exception('Failed to load books: ${response.statusCode}');
   }
 }

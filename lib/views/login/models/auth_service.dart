@@ -1,51 +1,74 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../../../core/network/dio_client.dart';
 import '../../../core/constants/api_constants.dart';
 import 'login_request.dart';
 import 'user.dart';
 
 class AuthService {
+  final Dio _dio = DioClient().dio;
+
   Future<User> login(LoginRequest req) async {
-    // Try with 'email' field first
-    var response = await _attemptLogin({'email': req.email, 'password': req.password});
-    
-    // If 400, try with 'username' field
-    if (response.statusCode == 400) {
-      response = await _attemptLogin({'username': req.email, 'password': req.password});
+    try{
+      Response response;
+      try{
+        response = await _dio.post(
+          ApiConstants.login,
+          data: {'email': req.email, 'password':req.password},
+        );
+      } on DioException catch (e){
+        if (e.response?.statusCode == 400){
+          response = await _dio.post(
+            ApiConstants.login,
+            data: {'username': req.email, 'password': req.password},
+          );
+        } else {
+          rethrow;
+        }
+      }
+      
+      return _handleResponse(response);
+    } on DioException catch (e){
+      _handleError(e);
+      throw Exception('login failed');
     }
-    
-    return _handleResponse(response);
   }
 
-  Future<http.Response> _attemptLogin(Map<String, dynamic> body) async {
-    return await http.post(
-      Uri.parse(ApiConstants.login),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
-  }
-
-  User _handleResponse(http.Response res) {
-    if (res.statusCode == 200 || res.statusCode == 201) {
-      final data = jsonDecode(res.body);
+  User _handleResponse(Response response){
+    if (response.statusCode == 200 || response.statusCode == 201){
+      final data = response.data as Map<String, dynamic>;
       return User.fromJson(data);
     }
+    throw Exception('login failed');
+  }
 
-    // For any error, show user-friendly message
-    if (res.statusCode == 400 || res.statusCode == 401 || res.statusCode == 403) {
-      throw Exception('Invalid email or password');
-    }
+  void _handleError(DioException e){
+    if (e.response != null){
+      final statusCode = e.response!.statusCode;
 
-    String message = 'Invalid email or password';
-    try {
-      final body = jsonDecode(res.body);
-      if (body is Map && body['detail'] != null) {
-        message = body['detail'];
+      if (statusCode == 400 || statusCode == 401 || statusCode == 403){
+        String message = 'Invalid email or password';
+      try{
+      final data = e.response!.data;
+      if (data is Map && data['detail'] != null){
+        message = data['detail'];
       }
-    } catch (e) {
-      // Ignore parse errors
-    }
-    
+    } catch (_) {}
+
     throw Exception(message);
   }
+
+  throw Exception('Server error: ${e.response?.statusCode}');
+}
+
+if (e.type == DioExceptionType.connectionTimeout ||
+e.type == DioExceptionType.receiveTimeout){
+  throw Exception('Connection timeout. Please try again');
+}
+
+if (e.type == DioExceptionType.connectionError){
+  throw Exception('No internet connection. Please check your network.');
+}
+
+throw Exception('Something went wrong. Please try again');
+}
 }
