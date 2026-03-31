@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../shared/widgets/book_card.dart';
 import 'books_view_model.dart';
-import '../favorite/favorites_view_model.dart';
+import '../../core/services/navigation_service.dart';
+import '../../shared/services/favorite_service.dart';
+import '../../core/constants/app_routes.dart';
+import '../../core/di/service_locator.dart';
 import '../../core/services/storage_service.dart';
-import '../login/login_screen.dart';
-import '../favorite/favorites_screen.dart';
 
 class BooksScreen extends StatelessWidget {
   const BooksScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<BooksViewModel, FavoritesViewModel>(
-      builder: (context, booksVm, favVm, _) {
-        booksVm.init(); // Initialize loading on first build
+    return Consumer2<BooksViewModel, FavoriteService>(
+      builder: (context, booksVm, favoriteService, _) {
+        if (!booksVm.isInitialized){
+
+        WidgetsBinding.instance.addPostFrameCallback((_){
+          booksVm.init();
+        });
+        }
+        
         return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -30,23 +37,17 @@ class BooksScreen extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.favorite),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FavoritesScreen()),
-                );
+              onPressed: (){
+                locator<NavigationService>().navigateTo(AppRoutes.favorites);
               },
             ),
             IconButton(
               icon: const Icon(Icons.logout),
-              onPressed: () async {
-                final storage = StorageService();
+              onPressed: () async { 
+                final storage = locator<StorageService>();
                 await storage.clearToken();
-                if (context.mounted) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  );
+                if (context.mounted){
+                  locator<NavigationService>().navigateToAndClearStack(AppRoutes.login);
                 }
               },
             ),
@@ -87,9 +88,9 @@ class BooksScreen extends StatelessWidget {
                             return BookCard(
                               key: ValueKey('book_${book.slug}_$index'),
                               book: book,
-                              isFavorite: favVm.isFavorite(book),
+                              isFavorite: favoriteService.isFavorite(book),
                               onFavoriteToggle: () {
-                                favVm.toggleFavorite(book);
+                                favoriteService.toggleFavorite(book);
                               },
                             );
                           },

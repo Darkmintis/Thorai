@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'login_view_model.dart';
-import '../book/books_screen.dart';
+import '../../core/services/navigation_service.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -135,10 +135,7 @@ class LoginScreen extends StatelessWidget {
                             try {
                               await vm.login();
                               if (context.mounted) {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const BooksScreen()),
-                                );
+                                NavigationService().replaceWith('/books');
                               }
                             } catch (_) {
                               // Error handled by view model
