@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../shared/widget/book_card.dart';
+import '../../shared/widgets/book_card.dart';
 import 'favorites_view_model.dart';
 
 class FavoritesScreen extends StatelessWidget {

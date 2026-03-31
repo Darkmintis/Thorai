@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import '../../../core/network/dio_client.dart';
 import '../../../core/constants/api_constants.dart';
-import 'book.dart';
+import '../../../shared/models/book.dart';
 
 class BookResult {
   final List<Book> books;

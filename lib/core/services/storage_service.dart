@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../../views/book/models/book.dart';
+import '../../shared/models/book.dart';
 import 'dart:convert';
 
 class StorageService {

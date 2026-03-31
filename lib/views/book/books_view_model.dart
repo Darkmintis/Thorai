@@ -1,6 +1,6 @@
 import '../../core/base/base_viewmodel.dart';
 import 'models/book_service.dart';
-import 'models/book.dart';
+import '../../shared/models/book.dart';
 import '../../core/services/storage_service.dart';
 
 class BooksViewModel extends BaseViewModel {
