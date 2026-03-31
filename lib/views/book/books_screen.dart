@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'widget/book_card.dart';
+import '../../shared/widget/book_card.dart';
 import 'books_view_model.dart';
 import '../favorite/favorites_view_model.dart';
 import '../../core/services/storage_service.dart';
